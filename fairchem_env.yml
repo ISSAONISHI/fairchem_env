@@ -1,0 +1,14 @@
+name: onishi_fairchem
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - ase
+  - numpy
+  - scipy
+  - matplotlib
+  - ipython
+  - pip:
+      - fairchem-core
