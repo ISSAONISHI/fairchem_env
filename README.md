@@ -91,6 +91,11 @@ conda remove --name fairchem_env --all
 ```bash
 conda list --explicit > fairchem_env.txt
 ```
+復元方法:
+
+```bash
+conda create --name fairchem_env --file fairchem_env.txt
+```
 
 
 
@@ -190,13 +195,6 @@ conda list --explicit > fairchem_env.txt
 ```
 
 To restore the environment:
-
-```bash
-conda create --name fairchem_env --file fairchem_env.txt
-```
-
-
-復元方法:
 
 ```bash
 conda create --name fairchem_env --file fairchem_env.txt
