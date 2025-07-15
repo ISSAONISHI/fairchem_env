@@ -92,6 +92,110 @@ conda remove --name fairchem_env --all
 conda list --explicit > fairchem_env.txt
 ```
 
+
+
+
+# fairchem\_env Virtual Environment Setup Manual (English)
+
+This document summarizes the setup procedure for the `fairchem_env` virtual environment to run code from [FAIRChem (facebookresearch/fairchem)](https://github.com/facebookresearch/fairchem) using Python 3.12.
+
+---
+
+## ✓ Prerequisites
+
+* Anaconda or Miniconda must be installed
+* Assumes Windows OS
+
+---
+
+## 1. Create the Environment
+
+Use the `fairchem_env.yml` file in the GitHub repository to create the environment.
+
+```bash
+conda env create -f fairchem_env.yml
+conda activate fairchem_env
+```
+
+---
+
+## 2. HuggingFace Authentication (for UMA model access)
+
+To use FAIRChem's UMA models (e.g., `uma-s-1p1`), you need to log in to your HuggingFace account and register an access token.
+
+```bash
+huggingface-cli login
+```
+
+Apply for access to the UMA models at the following URL:
+[https://huggingface.co/facebook/UMA](https://huggingface.co/facebook/UMA)
+
+---
+
+## 3. Example: Using UMA Model
+
+Example of relaxing CO adsorption structure on Cu surface:
+
+```python
+from ase.build import fcc100, add_adsorbate, molecule
+from ase.optimize import LBFGS
+from fairchem.core import pretrained_mlip, FAIRChemCalculator
+
+slab = fcc100("Cu", (3, 3, 3), vacuum=8)
+add_adsorbate(slab, molecule("CO"), height=2.0, position="bridge")
+
+predictor = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda")
+slab.calc = FAIRChemCalculator(predictor, task_name="oc20")
+
+opt = LBFGS(slab)
+opt.run(fmax=0.05, steps=100)
+```
+
+---
+
+## 4. Spyder (Optional)
+
+If you wish to use a GUI, install Spyder from conda-forge with the latest version:
+
+```bash
+conda install -c conda-forge spyder
+```
+
+---
+
+## 5. Visual Studio Build Tools (if required)
+
+Some packages may require a C++ compiler. Follow the steps below:
+
+1. Download the [Visual Studio Installer](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+2. Select the following workload:
+
+   * ✓ Desktop development with C++
+3. After installation, restart Anaconda Prompt
+
+---
+
+## 6. Notes
+
+* If the environment breaks, remove and recreate it:
+
+```bash
+conda remove --name fairchem_env --all
+```
+
+* To preserve reproducibility, export the environment as follows:
+
+```bash
+conda list --explicit > fairchem_env.txt
+```
+
+To restore the environment:
+
+```bash
+conda create --name fairchem_env --file fairchem_env.txt
+```
+
+
 復元方法:
 
 ```bash
