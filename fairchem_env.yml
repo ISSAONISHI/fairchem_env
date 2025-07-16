@@ -1,4 +1,4 @@
-name: onishi_fairchem
+name: fairchem
 channels:
   - conda-forge
   - defaults
