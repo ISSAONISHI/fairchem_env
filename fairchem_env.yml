@@ -1,4 +1,4 @@
-name: fairchem
+name: fairchem_env
 channels:
   - conda-forge
   - defaults
@@ -10,5 +10,16 @@ dependencies:
   - scipy
   - matplotlib
   - ipython
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=12.1
   - pip:
-      - fairchem-core
+      - git+https://github.com/facebookresearch/e3nn.git
+      - omegaconf
+      - hydra-core
+      - einops
+      - torchtnt
+      - pymatgen
+      - huggingface_hub
+      - tqdm
