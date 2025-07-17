@@ -8,7 +8,7 @@
 
 - Windows 10 または 11（64-bit）
 - Anaconda または Miniconda がインストール済み
-- Git がインストールされており `git --version` が通ること
+- Git がインストールされており `git --version` が通ること（URL：https://git-scm.com/downloads/win）
 - GPU 環境推奨（CUDA 12.1）
 
 ---
@@ -125,7 +125,7 @@ This manual describes how to set up the `fairchem_env` virtual environment to us
 
 - Windows 10 or 11 (64-bit)
 - Anaconda or Miniconda installed
-- Git installed and `git --version` works
+- Git installed and `git --version` works (URL：https://git-scm.com/downloads/win)
 - GPU environment recommended (CUDA 12.1)
 
 ---
