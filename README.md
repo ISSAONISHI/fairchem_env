@@ -72,7 +72,7 @@ from fairchem.core import pretrained_mlip, FAIRChemCalculator
 slab = fcc100("Cu", (3, 3, 3), vacuum=8)
 add_adsorbate(slab, molecule("CO"), height=2.0, position="bridge")
 
-predictor = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda")
+predictor = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda") # CPUの場合は "cpu"
 slab.calc = FAIRChemCalculator(predictor, task_name="oc20")
 
 opt = LBFGS(slab)
@@ -189,7 +189,7 @@ from fairchem.core import pretrained_mlip, FAIRChemCalculator
 slab = fcc100("Cu", (3, 3, 3), vacuum=8)
 add_adsorbate(slab, molecule("CO"), height=2.0, position="bridge")
 
-predictor = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda")
+predictor = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda") # Use "cpu" if no GPU
 slab.calc = FAIRChemCalculator(predictor, task_name="oc20")
 
 opt = LBFGS(slab)
