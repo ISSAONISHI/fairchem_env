@@ -1,43 +1,68 @@
 # fairchem_env 仮想環境構築マニュアル（日本語）
 
-このドキュメントは [FAIRChem (facebookresearch/fairchem)](https://github.com/facebookresearch/fairchem) のコードを Python 3.12 環境で実行するための仮想環境 `fairchem_env` の構築手順をまとめたものです。
+このマニュアルでは、[FAIRChem (facebookresearch/fairchem)](https://github.com/facebookresearch/fairchem) の UMA モデルを Windows 環境で利用するための仮想環境 `fairchem_env` の構築手順を説明します。
 
 ---
 
 ## ✓ 前提条件
 
-* Anaconda または Miniconda がインストールされていること
-* Windows 環境を想定
+- Windows 10 または 11（64-bit）
+- Anaconda または Miniconda がインストール済み
+- Git がインストールされており `git --version` が通ること
+- GPU 環境推奨（CUDA 12.1）
 
 ---
 
-## 1. 仮想環境の作成
-
-GitHub リポジトリ内の `fairchem_env.yml` を使用して仮想環境を作成します。
+## 1. 仮想環境の作成とパッケージ導入
 
 ```bash
-conda env create -f fairchem_env.yml
+conda create -n fairchem_env python=3.12
 conda activate fairchem_env
+
+# PyTorch + CUDA（適宜バージョン調整）
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# 依存パッケージ
+pip install git+https://github.com/facebookresearch/e3nn.git
+pip install omegaconf hydra-core einops torchtnt pymatgen huggingface_hub tqdm
 ```
 
 ---
 
-## 2. HuggingFace 認証 (モデル利用時)
+## 2. fairchem のクローンとパス設定
 
-FAIRChem の UMA モデル (例: `uma-s-1p1`) を使用するには、HuggingFace のアカウントにログインしてアクセストークンを登録する必要があります。
+```bash
+git clone https://github.com/facebookresearch/fairchem.git
+```
+
+Python スクリプトの冒頭に以下を追加：
+
+```python
+import sys
+sys.path.append("C:/Users/ユーザー名/fairchem/src")  # ← 自分の環境に合わせて修正
+```
+
+---
+
+## 3. HuggingFace 認証と UMA モデルのアクセス
 
 ```bash
 huggingface-cli login
 ```
 
-以下のリンクから UMA モデルへのアクセス申請を行ってください:
+以下ページで UMA モデルの使用申請を行う：
 [https://huggingface.co/facebook/UMA](https://huggingface.co/facebook/UMA)
+
+承認後、以下のようにスクリプトにトークンを設定：
+
+```python
+from huggingface_hub import login
+login("hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+```
 
 ---
 
-## 3. UMA モデルの実行例
-
-Cu 表面上の CO 吸着構造を伸縮する例:
+## 4. UMA モデルの使用例（Cu 表面への CO 吸着構造最適化）
 
 ```python
 from ase.build import fcc100, add_adsorbate, molecule
@@ -56,9 +81,9 @@ opt.run(fmax=0.05, steps=100)
 
 ---
 
-## 4. Spyder (任意)
+## 5. オプション（GUI 実行用）
 
-GUI で実行する場合、Spyder を conda-forge から最新バージョンで設置します:
+Spyder を導入する場合は以下を実行：
 
 ```bash
 conda install -c conda-forge spyder
@@ -66,80 +91,95 @@ conda install -c conda-forge spyder
 
 ---
 
-## 5. Visual Studio Build Tools (必要な場合)
+## 6. 環境のエクスポート／復元
 
-パッケージによっては C++ コンパイラが必要な場合があります。
-
-1. [Visual Studio Installer](https://visualstudio.microsoft.com/ja/visual-cpp-build-tools/) をダウンロード
-2. 次のワークロードを選択:
-
-   * ☑ C++ によるデスクトップ開発
-3. 完了後、Anaconda Prompt を再起動
-
----
-
-## 6. 備考
-
-* 環境が壊れた場合は前て削除して作り直すこと
-
-```bash
-conda remove --name fairchem_env --all
-```
-
-* 環境再現性を保つため、下記のようにエクスポートすること
+### エクスポート：
 
 ```bash
 conda list --explicit > fairchem_env.txt
 ```
-復元方法:
+
+### 復元：
 
 ```bash
 conda create --name fairchem_env --file fairchem_env.txt
 ```
 
+---
 
+## 7. トラブル時の削除：
 
+```bash
+conda remove --name fairchem_env --all
+```
 
-# fairchem\_env Virtual Environment Setup Manual (English)
+---
 
-This document summarizes the setup procedure for the `fairchem_env` virtual environment to run code from [FAIRChem (facebookresearch/fairchem)](https://github.com/facebookresearch/fairchem) using Python 3.12.
+# fairchem_env Virtual Environment Setup Manual (English)
+
+This manual describes how to set up the `fairchem_env` virtual environment to use [FAIRChem (facebookresearch/fairchem)](https://github.com/facebookresearch/fairchem) UMA models on Windows.
 
 ---
 
 ## ✓ Prerequisites
 
-* Anaconda or Miniconda must be installed
-* Assumes Windows OS
+- Windows 10 or 11 (64-bit)
+- Anaconda or Miniconda installed
+- Git installed and `git --version` works
+- GPU environment recommended (CUDA 12.1)
 
 ---
 
-## 1. Create the Environment
-
-Use the `fairchem_env.yml` file in the GitHub repository to create the environment.
+## 1. Create Environment and Install Dependencies
 
 ```bash
-conda env create -f fairchem_env.yml
+conda create -n fairchem_env python=3.12
 conda activate fairchem_env
+
+# PyTorch with CUDA support (adjust version if needed)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Additional dependencies
+pip install git+https://github.com/facebookresearch/e3nn.git
+pip install omegaconf hydra-core einops torchtnt pymatgen huggingface_hub tqdm
 ```
 
 ---
 
-## 2. HuggingFace Authentication (for UMA model access)
+## 2. Clone fairchem and Set Python Path
 
-To use FAIRChem's UMA models (e.g., `uma-s-1p1`), you need to log in to your HuggingFace account and register an access token.
+```bash
+git clone https://github.com/facebookresearch/fairchem.git
+```
+
+Add the following to your script:
+
+```python
+import sys
+sys.path.append("C:/Users/YourUsername/fairchem/src")  # ← Adjust to your environment
+```
+
+---
+
+## 3. HuggingFace Authentication and UMA Access
 
 ```bash
 huggingface-cli login
 ```
 
-Apply for access to the UMA models at the following URL:
+Apply for UMA model access at:
 [https://huggingface.co/facebook/UMA](https://huggingface.co/facebook/UMA)
+
+After approval, use your token as:
+
+```python
+from huggingface_hub import login
+login("hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+```
 
 ---
 
-## 3. Example: Using UMA Model
-
-Example of relaxing CO adsorption structure on Cu surface:
+## 4. Example: CO Adsorption Relaxation on Cu Surface
 
 ```python
 from ase.build import fcc100, add_adsorbate, molecule
@@ -158,9 +198,7 @@ opt.run(fmax=0.05, steps=100)
 
 ---
 
-## 4. Spyder (Optional)
-
-If you wish to use a GUI, install Spyder from conda-forge with the latest version:
+## 5. (Optional) Spyder GUI
 
 ```bash
 conda install -c conda-forge spyder
@@ -168,34 +206,24 @@ conda install -c conda-forge spyder
 
 ---
 
-## 5. Visual Studio Build Tools (if required)
+## 6. Export/Restore Environment
 
-Some packages may require a C++ compiler. Follow the steps below:
-
-1. Download the [Visual Studio Installer](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-2. Select the following workload:
-
-   * ✓ Desktop development with C++
-3. After installation, restart Anaconda Prompt
-
----
-
-## 6. Notes
-
-* If the environment breaks, remove and recreate it:
-
-```bash
-conda remove --name fairchem_env --all
-```
-
-* To preserve reproducibility, export the environment as follows:
+### Export:
 
 ```bash
 conda list --explicit > fairchem_env.txt
 ```
 
-To restore the environment:
+### Restore:
 
 ```bash
 conda create --name fairchem_env --file fairchem_env.txt
+```
+
+---
+
+## 7. Remove Environment
+
+```bash
+conda remove --name fairchem_env --all
 ```
